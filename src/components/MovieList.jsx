@@ -8,13 +8,14 @@ const MovieList = () => {
   const [movies, setMovies] = useState([]);
   const [year, setYear] = useState(2012);
   const [isLoading, setIsLoading] = useState(false);
-  const [direction, setDirection] = useState(null);
+  const [direction, setDirection] = useState(null); // To track scroll direction
   const [genres, setGenres] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
+  const [searchPage, setSearchPage] = useState(1); // Page for search results
 
   const API_KEY = "2dca580c2a14b55200e784d157207b4d";
 
-  // Fetch genres
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -27,7 +28,7 @@ const MovieList = () => {
             },
           }
         );
-        setGenres((prev) => [...prev, ...response.data.genres]);
+        setGenres(response.data.genres);
       } catch (error) {
         console.error("Error fetching genres:", error);
       }
@@ -36,7 +37,6 @@ const MovieList = () => {
     fetchGenres();
   }, []);
 
-  // Helper function to load movies based on year and genre change
   const loadMovies = async (newYear, genreIds = []) => {
     setIsLoading(true);
     try {
@@ -80,29 +80,74 @@ const MovieList = () => {
     setIsLoading(false);
   };
 
+  const loadSearchResults = async (query, page) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/search/movie`,
+        {
+          params: {
+            api_key: API_KEY,
+            query,
+            page,
+            include_adult: false,
+          },
+        }
+      );
+
+      const movieData = await Promise.all(
+        response.data.results.map(async (movie) => {
+          const movieDetails = await axios.get(
+            `https://api.themoviedb.org/3/movie/${movie.id}`,
+            {
+              params: {
+                api_key: API_KEY,
+                append_to_response: "credits",
+              },
+            }
+          );
+          return { ...movie, details: movieDetails.data };
+        })
+      );
+
+      setMovies((prevMovies) => [...prevMovies, ...movieData]);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    loadMovies(year, selectedGenres);
-  }, [year, selectedGenres]);
+    if (searchQuery) {
+      setMovies([]);
+      setSearchPage(1);
+      loadSearchResults(searchQuery, 1);
+    } else {
+      loadMovies(year, selectedGenres);
+    }
+  }, [year, selectedGenres, searchQuery]);
 
   const observer = useRef();
-
-  // Infinite Scrolling with Intersection Observer to detect ref when scrolled down
   const lastMovieElementRef = useCallback(
     (node) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          setDirection("down");
-          setYear((prevYear) => prevYear - 1);
+          if (searchQuery) {
+            setSearchPage((prevPage) => prevPage + 1);
+            loadSearchResults(searchQuery, searchPage + 1);
+          } else {
+            setDirection("down");
+            setYear((prevYear) => prevYear - 1);
+          }
         }
       });
       if (node) observer.current.observe(node);
     },
-    [isLoading]
+    [isLoading, searchQuery, searchPage]
   );
 
-  // Infinite Scrolling with Intersection Observer to detect ref when scrolled up
   const firstMovieElementRef = useCallback(
     (node) => {
       if (isLoading) return;
@@ -127,7 +172,7 @@ const MovieList = () => {
     return chunks;
   };
 
-  // Helper function to handle genre change
+  // Helper function to select genres
   const handleGenreChange = (genreId) => {
     setMovies([]);
     if (selectedGenres.includes(genreId)) {
@@ -137,11 +182,25 @@ const MovieList = () => {
     }
   };
 
+  // Helper function to search movies
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const movieChunks = chunkMovies(movies);
 
   return (
     <div>
-      <h2 className="title">MOVIEFIX</h2>
+      <div className="navbar">
+        <h2 className="title">MOVIEFIX</h2>
+        <input
+          className="search-bar"
+          type="text"
+          placeholder="Search for movies..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </div>
       <Genres
         genres={genres}
         selectedGenres={selectedGenres}

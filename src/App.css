@@ -117,18 +117,9 @@ body {
 }
 
 .title {
-  margin-bottom: 0;
+  margin: 0;
   text-align: left;
-  padding: 0 80px;
   color: rgb(238, 36, 53);
-
-  @media (max-width: 768px) {
-    padding: 0 60px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 40px;
-  }
 }
 
 .movie-list {
@@ -141,5 +132,25 @@ body {
 
   @media (max-width: 480px) {
     padding: 20px 40px;
+  }
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 20px 40px 0 80px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.search-bar {
+  height: 30px;
+  margin-left: auto;
+  padding: 0 80px;
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
   }
 }
