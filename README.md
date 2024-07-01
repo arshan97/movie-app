@@ -1,8 +1,26 @@
-# React + Vite
+# Movie App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React application that displays a list of movies from The Movie Database (TMDb) API. It supports infinite scrolling to load more movies, filtering by genre, and searching for movies by title.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Infinite scrolling to load more movies.
+- Filtering movies by genre.
+- Searching for movies by title.
+- Displaying movie details including title, genres, cast, director, and a short description.
+
+## Prerequisites
+
+- Node.js (>=20.15.0)
+- npm (>=10.7.0)
+
+## Getting Started
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/your-username/movie-list-app.git
+cd movie-list-app
+npm install
+npm run dev
+```
