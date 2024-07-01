@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import "../App.css";
 import Genres from "./Genres";
+import MovieCard from "./MovieCard";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -25,7 +26,6 @@ const MovieList = () => {
             },
           }
         );
-        console.log(response);
         setGenres((prev) => [...prev, ...response.data.genres]);
       } catch (error) {
         console.error("Error fetching genres:", error);
@@ -146,51 +146,16 @@ const MovieList = () => {
           <h2 className="year">{2012 - chunkIndex}</h2>
           <div className="movie-cards">
             {chunk.map((movie, movieIndex) => (
-              <div
+              <MovieCard
+                movie={movie}
+                chunk={chunk}
+                chunkIndex={chunkIndex}
+                firstMovieElementRef={firstMovieElementRef}
+                lastMovieElementRef={lastMovieElementRef}
+                movieChunks={movieChunks}
+                movieIndex={movieIndex}
                 key={movie.id}
-                className="movie-card"
-                ref={
-                  movieIndex === chunk.length - 1 &&
-                  chunkIndex === movieChunks.length - 1
-                    ? lastMovieElementRef
-                    : movieIndex === 0 && chunkIndex === 0
-                    ? firstMovieElementRef
-                    : null
-                }
-              >
-                <div className="movie-card-image-wrapper">
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    alt={`${movie.title} Poster`}
-                    className="movie-card-image"
-                  />
-                  <div className="movie-card-overlay">
-                    <h3>{movie.title}</h3>
-                    <p>
-                      <strong>Genres:</strong>{" "}
-                      {movie.details.genres
-                        .map((genre) => genre.name)
-                        .join(", ")}
-                    </p>
-                    <p>
-                      <strong>Cast:</strong>{" "}
-                      {movie.details.credits.cast
-                        .slice(0, 3)
-                        .map((actor) => actor.name)
-                        .join(", ")}
-                    </p>
-                    <p>
-                      <strong>Director:</strong>{" "}
-                      {
-                        movie.details.credits.crew.find(
-                          (person) => person.job === "Director"
-                        )?.name
-                      }
-                    </p>
-                    <p>{movie.overview.slice(0, 100)}...</p>
-                  </div>
-                </div>
-              </div>
+              />
             ))}
           </div>
         </div>
