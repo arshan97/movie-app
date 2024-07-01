@@ -19,8 +19,8 @@ This is a React application that displays a list of movies from The Movie Databa
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/movie-list-app.git
-cd movie-list-app
+git clone https://github.com/arshan97/movie-app
+cd movie-app
 npm install
 npm run dev
 ```
