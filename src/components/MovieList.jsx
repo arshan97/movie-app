@@ -14,6 +14,7 @@ const MovieList = () => {
 
   const API_KEY = "2dca580c2a14b55200e784d157207b4d";
 
+  // Fetch genres
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -35,6 +36,7 @@ const MovieList = () => {
     fetchGenres();
   }, []);
 
+  // Helper function to load movies based on year and genre change
   const loadMovies = async (newYear, genreIds = []) => {
     setIsLoading(true);
     try {
@@ -83,6 +85,8 @@ const MovieList = () => {
   }, [year, selectedGenres]);
 
   const observer = useRef();
+
+  // Infinite Scrolling with Intersection Observer to detect ref when scrolled down
   const lastMovieElementRef = useCallback(
     (node) => {
       if (isLoading) return;
@@ -98,6 +102,7 @@ const MovieList = () => {
     [isLoading]
   );
 
+  // Infinite Scrolling with Intersection Observer to detect ref when scrolled up
   const firstMovieElementRef = useCallback(
     (node) => {
       if (isLoading) return;
@@ -122,6 +127,7 @@ const MovieList = () => {
     return chunks;
   };
 
+  // Helper function to handle genre change
   const handleGenreChange = (genreId) => {
     setMovies([]);
     if (selectedGenres.includes(genreId)) {
