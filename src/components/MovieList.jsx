@@ -225,7 +225,7 @@ const MovieList = () => {
           </div>
         </div>
       ))}
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <p className="loading">Loading...</p>}
     </div>
   );
 };

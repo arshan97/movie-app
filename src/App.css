@@ -154,3 +154,9 @@ body {
     margin: 0 auto;
   }
 }
+
+.loading {
+  transform: scale(2);
+  text-align: center;
+  margin-top: 50px;
+}
