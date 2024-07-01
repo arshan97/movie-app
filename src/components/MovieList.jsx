@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import "../App.css";
+import Genres from "./Genres";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -135,6 +136,11 @@ const MovieList = () => {
   return (
     <div>
       <h2 className="title">MOVIEFIX</h2>
+      <Genres
+        genres={genres}
+        selectedGenres={selectedGenres}
+        handleGenreChange={handleGenreChange}
+      />
       {movieChunks.map((chunk, chunkIndex) => (
         <div key={chunkIndex} className="movie-list">
           <h2 className="year">{2012 - chunkIndex}</h2>
