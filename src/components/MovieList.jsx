@@ -50,6 +50,7 @@ const MovieList = () => {
             vote_count_gte: 100,
             page: 1,
             with_genres: genreIds.join(","),
+            length: 20,
           },
         }
       );
@@ -70,9 +71,9 @@ const MovieList = () => {
       );
 
       if (direction === "down") {
-        setMovies((prevMovies) => [...prevMovies, ...movieData]);
+        setMovies([...movies, ...movieData]);
       } else {
-        setMovies((prevMovies) => [...movieData, ...prevMovies]);
+        setMovies([...movieData, ...movies]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -128,6 +129,7 @@ const MovieList = () => {
   }, [year, selectedGenres, searchQuery]);
 
   const observer = useRef();
+
   const lastMovieElementRef = useCallback(
     (node) => {
       if (isLoading) return;
@@ -208,7 +210,7 @@ const MovieList = () => {
       />
       {movieChunks.map((chunk, chunkIndex) => (
         <div key={chunkIndex} className="movie-list">
-          <h2 className="year">{2012 - chunkIndex}</h2>
+          <h2 className="year">{!searchQuery && 2012 - chunkIndex}</h2>
           <div className="movie-cards">
             {chunk.map((movie, movieIndex) => (
               <MovieCard
